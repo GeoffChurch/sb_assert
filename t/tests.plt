@@ -1,51 +1,68 @@
 :- use_module(library(stache)).
 
-:- begin_tests(stache, [cleanup(empty)]).
+:- begin_tests(stache).
 
-empty :- $(\+rummage(_)).
+:- use_module(library(chr)).
 
-rummages(As) :- maplist(rummage, As).
-rummages_lazy(As) :- maplist(rummage_lazy, As).
+rummages(As) :- maplist(rummage_, As).
+rummages_lazy(As) :- maplist(rummage_lazy_, As).
 
-test(starts_empty) :-
-    empty.
+rummage_(A) :- writeln(rummage_(A)), rummage(A).
+rummage_lazy_(A) :- writeln(rummage_lazy_(A)), rummage_lazy(A).
 
-test(ends_empty_on_success) :-
-    staching(a, stachings([b,c], stachings([d,e], rummages([a,c,e,d,a])))),
-    empty.
+test(starts_empty, fail) :-
+    rummage(_).
 
-test(ends_empty_on_success_lazy, [nondet]) :-
-    staching(a, stachings([b,c], stachings([d,e], rummages_lazy([a,c,e,d,a])))),
-    empty.
+test(simple) :-
+    maplist(+, [a, b, c, d, e]),
+    rummages([a, c, e, d, a]).
 
-test(ends_empty_on_failure) :-
-    \+ staching(a, stachings([b,c], stachings([d,e], rummages([b,d,f])))),
-    empty.
+test(simple_lazy, [nondet]) :-
+    maplist(+, [a, b, c, d, e]),
+    rummages_lazy([a, c, e, d, a]).
 
-test(ends_empty_on_failure_lazy) :-
-    \+ staching(a, stachings([b,c], stachings([d,e], rummages_lazy([b,d,f])))),
-    empty.
+test(simple_fail) :-
+    maplist(+, [a, b, c, d, e]),
+    rummage(b),
+    rummage(d),
+    \+ rummage(f),
+    rummage(d).
 
-test(multiple_assumptions, all(X == [a, b, c])) :-
-    staching(f(a), staching(g, stachings([f(b),f(c)], rummage(f(X))))).
+test(simple_fail_lazy, [nondet]) :-
+    maplist(+, [a, b, c, d, e]),
+    rummage_lazy(b),
+    rummage_lazy(d),
+    \+ rummage_lazy(f),
+    rummage_lazy(d).
+
+test(multiple_assumptions) :-
+    maplist(+, [f(A), g, f(B), f(C)]),
+    rummage(f(X)),
+    (X == A ; X == B ; X == C),
+    X \== A,
+    X \== B,
+    X == C.
 
 test(multiple_assumptions_lazy, all(X == [c, b, a])) :-
-    staching(f(a), staching(g, stachings([f(b),f(c)], rummage_lazy(f(X))))).
+    maplist(+, [f(a), g, f(b), f(c)]),
+    rummage_lazy(f(X)).
 
 test(combinations, all(X-Y == [a-c, a-d, b-c, b-d])) :-
-    stachings([f(a),f(b),g(c),g(d)],
-	      rummages([f(X),g(Y)])).
+    maplist(+, [f(a), f(b), g(c), g(d)]),
+    rummages([f(X), g(Y)]).
 
 test(combinations_lazy, all(X-Y == [b-d, b-c, a-d, a-c])) :-
-    stachings([f(a),f(b),g(c),g(d)],
-	      rummages_lazy([f(X),g(Y)])).
+    maplist(+, [f(a), f(b), g(c), g(d)]),
+    rummages_lazy([f(X), g(Y)]).
 
-test(persistence) :-
-    staching(f(X), rummage(f(Y))),
-    X == Y.
+test(persistence, [X == Y]) :-
+    +f(X),
+    rummage(f(Y)).
 
-test(persistence_lazy, [nondet]) :-
-    staching(f(X), rummage_lazy(f(Y))),
-    X == Y.
+test(persistence_lazy, [nondet, X == Y]) :-
+    +f(X),
+    rummage_lazy(f(Y)).
 
 :- end_tests(stache).
+
+:- run_tests.
