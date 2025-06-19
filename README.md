@@ -1,12 +1,14 @@
-# Stache :-{ Stash That Actually Can Handle Existentials }-:
+# sb_assert
 
-In theory: first-order embedded implication / hypothetical reasoning.
+Stateful, backtrackable assertions in SWI-Prolog.
 
-In practice: drop-in replacement for DCG-based state threading.
+This uses the CHR store to persist state (aka logic variables) in assertions.
+
+There may be bugs!
 
 To install:
 ```
-$ swipl pack install stache
+$ swipl pack install sb_assert
 ```
 
 See the [tests](t/) for examples.

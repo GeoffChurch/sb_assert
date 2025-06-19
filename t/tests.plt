@@ -38,3 +38,4 @@ test(persistence, [X == Y]) :-
 :- end_tests(sb_assert).
 
 :- run_tests.
+:- halt.
