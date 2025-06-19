@@ -35,6 +35,12 @@ test(persistence, [X == Y]) :-
     sb_assertz(X, f(X)),
     f(Y).
 
+test(rule) :-
+    sb_assertz([X], a :- b(X)),
+    sb_assertz([], b(c)),
+    a,
+    X == c.
+
 :- end_tests(sb_assert).
 
 :- run_tests.

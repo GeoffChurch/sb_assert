@@ -45,14 +45,14 @@ setup_wrapper_(M, F/A) =>
     wrapper_ref(F/A, M, _)
     ->  true
     ;   functor(H, F, A),
-        b_assertz(M:(H :- sb_assert:eval(H)), Ref),
+        b_assertz(M:(H :- sb_assert:eval(H, M)), Ref),
         b_assertz(wrapper_ref(F/A, M, Ref), _).
 
-eval(H) :-
+eval(H, M) :-
     $(same_functor(H, H_)),
     rummage(term_state((H_ :- B_), State)),
     copy_term((H_ :- B_)-State, (H :- B)-State),
-    call(B).
+    call(M:B).
 
 term_headfunctor(Term, F/A) :-
     Term = (H :- _)
