@@ -1,4 +1,4 @@
-name(stache).
+name(sb_assert).
 version('0.1').
 title('Stateful, backtrackable assertions').
 keywords([]).
