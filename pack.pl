@@ -1,5 +1,5 @@
 name(sb_assert).
-version('0.2').
+version('0.3').
 title('Stateful, backtrackable assertions').
 keywords([]).
 author('Geoffrey Churchill', 'geoffrey.a.churchill@gmail.com').
